@@ -27,7 +27,6 @@ class TransactionStatusEnum(StrEnum):
     roll_backed = "ROLLBACKED"
 
 
-
 class RequestUserModel(BaseModel):
     email: str
 
