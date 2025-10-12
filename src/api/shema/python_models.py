@@ -1,7 +1,6 @@
 import typing
 from datetime import datetime
 from enum import StrEnum
-
 from pydantic import BaseModel
 from pydantic.v1 import root_validator
 
