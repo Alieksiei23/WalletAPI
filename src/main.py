@@ -4,7 +4,7 @@ from fastapi import FastAPI
 from db.db_models import Base
 from core.config import engine
 from api.v1 import user_router, analytics_router, transaction_router
-
+from dataclasses import dataclass
 
 app = FastAPI()
 
@@ -12,6 +12,7 @@ app.include_router(user_router)
 app.include_router(analytics_router)
 app.include_router(transaction_router)
 
+a=''
 
 async def create_db_and_tables():
     async with engine.begin() as conn:

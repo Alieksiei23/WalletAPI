@@ -3,14 +3,14 @@ repos:
     hooks:
       - id: flake8
         name: flake8
-        entry: flake --config .flake8 .
+        entry: flake --config .flake8
         language: system
         types: [ python ]
-        pass_filenames: false
+        pass_filenames: true
 
       - id: isort
         name: isort
-        entry: isort --settings-file ./.isort.cfg .
+        entry: isort --settings-file ./.isort.cfg
         language: system
         types: [ python ]
-        pass_filenames: false
+        pass_filenames: true
