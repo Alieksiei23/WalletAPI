@@ -2,7 +2,7 @@ import uvicorn
 from fastapi import FastAPI
 
 from db.db_models import Base
-from core.config import engine, SessionDep
+from core.config import engine
 from api.v1 import user_router, analytics_router, transaction_router
 
 
@@ -19,7 +19,7 @@ async def create_db_and_tables():
 
 
 @app.on_event("startup")
-async def on_startup(session: SessionDep):
+async def on_startup():
     await create_db_and_tables()
 
 

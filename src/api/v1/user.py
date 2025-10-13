@@ -3,7 +3,7 @@ from fastapi import APIRouter, status
 
 from core.config import SessionDep
 from services.user_service import UserService
-from src.api.shema.python_models import (ResponseUserModel, RequestUserModel,
+from api.shema.python_models import (ResponseUserModel, RequestUserModel,
                                          UserModel, RequestUserUpdateModel)
 
 
