@@ -1,10 +1,10 @@
 import uvicorn
+
+from api.v1 import analytics_router, transaction_router, user_router
+from core.config import engine
+from db.db_models import Base
 from fastapi import FastAPI
 
-from db.db_models import Base
-from core.config import engine
-from api.v1 import user_router, analytics_router, transaction_router
-from dataclasses import dataclass
 
 app = FastAPI()
 
@@ -12,15 +12,14 @@ app.include_router(user_router)
 app.include_router(analytics_router)
 app.include_router(transaction_router)
 
-a=''
 
-async def create_db_and_tables():
+async def create_db_and_tables() -> None:
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
 
 
 @app.on_event("startup")
-async def on_startup():
+async def on_startup() -> None:
     await create_db_and_tables()
 
 
