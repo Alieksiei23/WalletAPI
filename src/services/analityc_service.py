@@ -1,8 +1,9 @@
-from datetime import datetime, timedelta
+from datetime import timedelta
 from typing import Any
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from core.config import settings
 from db.queries import (get_deposit_amount_without_rollback,
                         get_deposit_distinct_users_count,
                         get_not_rollbacked_transactions_count,
@@ -13,10 +14,10 @@ from db.queries import (get_deposit_amount_without_rollback,
 class AnalitycService:
     @staticmethod
     async def get_analitycs_for_52_weeks(session: AsyncSession) -> list[dict[str, Any]]:
-        dt_gt = datetime.utcnow().date() - timedelta(days=6)
-        dt_lt = datetime.utcnow().date()
+        dt_lt = settings.start_day
+        dt_gt = settings.week_ago
+        amount_weeks = settings.amount_weeks
         results = []
-        amount_weeks = 52
         for week in range(amount_weeks):
             registered_users_count = await get_registered_users_count(
                 session, dt_gt=dt_gt, dt_lt=dt_lt
