@@ -1,19 +1,19 @@
 from datetime import datetime, timedelta
+from typing import Any
 
-from db.queries import (
-    get_registered_users_count,
-    get_registered_and_deposit_users_count,
-    get_registered_and_not_rollbacked_deposit_users_count,
-    get_not_rollbacked_deposit_amount,
-    get_not_rollbacked_withdraw_amount,
-    get_transactions_count,
-    get_not_rollbacked_transactions_count,
-)
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from db.queries import (get_not_rollbacked_deposit_amount,
+                        get_not_rollbacked_transactions_count,
+                        get_not_rollbacked_withdraw_amount,
+                        get_registered_and_deposit_users_count,
+                        get_registered_and_not_rollbacked_deposit_users_count,
+                        get_registered_users_count, get_transactions_count,)
 
 
 class AnalitycService:
     @staticmethod
-    async def get_analitycs_for_52_weeks(session):
+    async def get_analitycs_for_52_weeks(session: AsyncSession) -> list[dict[str, Any]]:
         dt_gt = datetime.utcnow().date() - timedelta(weeks=1) + timedelta(days=1)
         dt_lt = datetime.utcnow().date()
         results = []

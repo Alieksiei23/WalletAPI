@@ -1,9 +1,11 @@
 from datetime import date
-from sqlalchemy import select, func
+
+from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.db.db_models import User, Transaction
-from src.api.shema.python_models import CurrencyEnum
+from api.shema.python_models import CurrencyEnum
+from db.db_models import Transaction, User
+
 
 EXCHANGE_RATES_TO_USD = {
     CurrencyEnum.USD: 1,
@@ -19,19 +21,19 @@ EXCHANGE_RATES_TO_USD = {
 }
 
 
-async def get_registered_users_count(session: AsyncSession, dt_gt: date, dt_lt: date):
+async def get_registered_users_count(session: AsyncSession, dt_gt: date, dt_lt: date) -> int:
     query = select(User).where((func.date(User.created) >= dt_gt) & (func.date(User.created) <= dt_lt))
     registered_users = await session.execute(query)
-    registered_users = registered_users.fetchall()
-    return len(registered_users)
+    rows = registered_users.fetchall()
+    return len(rows)
 
 
-async def get_registered_and_deposit_users_count(session: AsyncSession, dt_gt: date, dt_lt: date):
+async def get_registered_and_deposit_users_count(session: AsyncSession, dt_gt: date, dt_lt: date) -> int:
     result = 0
     query = select(User).where((func.date(User.created) >= dt_gt) & (func.date(User.created) <= dt_lt))
     registered_users = await session.execute(query)
-    registered_users = registered_users.scalars()
-    for user in registered_users:
+    rows = registered_users.scalars()
+    for user in rows:
         query = select(Transaction).where(
                                          (func.date(Transaction.created) >= dt_gt)
                                          & (func.date(Transaction.created) <= dt_lt)
@@ -39,18 +41,18 @@ async def get_registered_and_deposit_users_count(session: AsyncSession, dt_gt: d
                                          & (Transaction.amount > 0)
                                      )
         deposits = await session.execute(query)
-        deposits = deposits.fetchall()
-        if len(deposits) > 0:
+        rows_deposits = deposits.fetchall()
+        if len(rows_deposits) > 0:
             result += 1
     return result
 
 
-async def get_registered_and_not_rollbacked_deposit_users_count(session: AsyncSession, dt_gt: date, dt_lt: date):
+async def get_registered_and_not_rollbacked_deposit_users_count(session: AsyncSession, dt_gt: date, dt_lt: date) -> int:
     result = 0
     query = select(User).where((func.date(User.created) >= dt_gt) & (func.date(User.created) <= dt_lt))
     registered_users = await session.execute(query)
-    registered_users = registered_users.scalars()
-    for user in registered_users:
+    registered_users_rows = registered_users.scalars()
+    for user in registered_users_rows:
         query = select(Transaction).where(
                                          (func.date(Transaction.created) >= dt_gt)
                                          & (func.date(Transaction.created) <= dt_lt)
@@ -59,13 +61,13 @@ async def get_registered_and_not_rollbacked_deposit_users_count(session: AsyncSe
                                          & (Transaction.status != "ROLLBACKED")
                                      )
         not_rollbacked_deposits = await session.execute(query)
-        not_rollbacked_deposits = not_rollbacked_deposits.fetchall()
-        if len(not_rollbacked_deposits) > 0:
+        not_rollbacked_deposits_rows = not_rollbacked_deposits.fetchall()
+        if len(not_rollbacked_deposits_rows) > 0:
             result += 1
     return result
 
 
-async def get_not_rollbacked_deposit_amount(session: AsyncSession, dt_gt: date, dt_lt: date):
+async def get_not_rollbacked_deposit_amount(session: AsyncSession, dt_gt: date, dt_lt: date) -> int:
     query = select(Transaction).where(
                                      (func.date(Transaction.created) >= dt_gt)
                                      & (func.date(Transaction.created) <= dt_lt)
@@ -73,13 +75,13 @@ async def get_not_rollbacked_deposit_amount(session: AsyncSession, dt_gt: date, 
                                      & (Transaction.status != "ROLLBACKED")
                                 )
     not_rollbacked_deposits = await session.execute(query)
-    not_rollbacked_deposits = not_rollbacked_deposits.scalars()
+    not_rollbacked_deposits_rows = not_rollbacked_deposits.scalars()
     return sum(
-        [x.amount * EXCHANGE_RATES_TO_USD[x.currency] for x in not_rollbacked_deposits]
+        [x.amount * EXCHANGE_RATES_TO_USD[x.currency] for x in not_rollbacked_deposits_rows]
     )
 
 
-async def get_not_rollbacked_withdraw_amount(session: AsyncSession, dt_gt: date, dt_lt: date):
+async def get_not_rollbacked_withdraw_amount(session: AsyncSession, dt_gt: date, dt_lt: date) -> int:
     query = select(Transaction).where(
                                      (func.date(Transaction.created) >= dt_gt)
                                      & (func.date(Transaction.created) <= dt_lt)
@@ -87,25 +89,25 @@ async def get_not_rollbacked_withdraw_amount(session: AsyncSession, dt_gt: date,
                                      & (Transaction.status != "ROLLBACKED")
                                  )
     not_rollbacked_withdraws = await session.execute(query)
-    not_rollbacked_withdraws = not_rollbacked_withdraws.scalars()
+    not_rollbacked_withdraws_rows = not_rollbacked_withdraws.scalars()
     return sum(
-        [x.amount * EXCHANGE_RATES_TO_USD[x.currency] for x in not_rollbacked_withdraws]
+        [x.amount * EXCHANGE_RATES_TO_USD[x.currency] for x in not_rollbacked_withdraws_rows]
     )
 
 
-async def get_transactions_count(session: AsyncSession, dt_gt: date, dt_lt: date):
+async def get_transactions_count(session: AsyncSession, dt_gt: date, dt_lt: date) -> int:
     query = select(Transaction).where((func.date(Transaction.created) >= dt_gt) & (func.date(Transaction.created) <= dt_lt))
     transactions = await session.execute(query)
-    transactions = transactions.fetchall()
-    return len(transactions)
+    transactions_rows = transactions.fetchall()
+    return len(transactions_rows)
 
 
-async def get_not_rollbacked_transactions_count(session: AsyncSession, dt_gt: date, dt_lt: date):
+async def get_not_rollbacked_transactions_count(session: AsyncSession, dt_gt: date, dt_lt: date) -> int:
     query = select(Transaction).where(
                                      (func.date(Transaction.created) >= dt_gt)
                                      & (func.date(Transaction.created) <= dt_lt)
                                      & (Transaction.status != "ROLLBACKED")
                                  )
     transactions = await session.execute(query)
-    transactions = transactions.fetchall()
-    return len(transactions)
+    transactions_rows = transactions.fetchall()
+    return len(transactions_rows)

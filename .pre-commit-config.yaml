@@ -1,0 +1,24 @@
+repos:
+  - repo: local
+    hooks:
+      - id: flake8
+        name: flake8
+        entry: flake8 --config .flake8
+        language: system
+        types: [ python ]
+        pass_filenames: true
+
+      - id: isort
+        name: isort
+        entry: isort --settings-file ./.isort.cfg
+        language: system
+        types: [ python ]
+        pass_filenames: true
+
+      - id: mypy
+        name: mypy
+        entry: mypy
+        args: [--strict, --ignore-missing-imports, --config-file=.mypy.ini]
+        language: system
+        types: [ python ]
+        pass_filenames: true

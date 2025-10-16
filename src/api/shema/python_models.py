@@ -1,9 +1,11 @@
 import typing
 from datetime import datetime
+from decimal import Decimal
+
 from pydantic import BaseModel, EmailStr
 from pydantic.v1 import root_validator
 
-from enums.enum import UserStatusEnum, CurrencyEnum, TransactionStatusEnum
+from enums.enum import CurrencyEnum, TransactionStatusEnum, UserStatusEnum
 
 
 class RequestUserModel(BaseModel):
@@ -16,7 +18,7 @@ class RequestUserUpdateModel(BaseModel):
 
 class ResponseUserBalanceModel(BaseModel):
     currency: typing.Optional[CurrencyEnum] = None
-    amount: typing.Optional[float] = None
+    amount: typing.Optional[Decimal] = None
 
 
 class ResponseUserModel(BaseModel):
@@ -38,10 +40,10 @@ class UserBalanceModel(BaseModel):
     id: typing.Optional[int]
     user_id: typing.Optional[int] = None
     currency: typing.Optional[CurrencyEnum] = None
-    amount: typing.Optional[float] = None
+    amount: typing.Optional[Decimal] = None
 
     @root_validator(pre=True)
-    def validate_not_negative(self, values):
+    def validate_not_negative(self, values: dict[str, typing.Any]) -> dict[str, typing.Any]:
         if "amount" in values and values.get("amount"):
             if values["amount"] < 0:
                 raise ValueError("Amount cannot be negative")
@@ -51,13 +53,13 @@ class UserBalanceModel(BaseModel):
 
 class RequestTransactionModel(BaseModel):
     currency: CurrencyEnum
-    amount: float
+    amount: Decimal
 
 
 class TransactionModel(BaseModel):
     id: typing.Optional[int]
     user_id: typing.Optional[int] = None
     currency: typing.Optional[CurrencyEnum] = None
-    amount: typing.Optional[float] = None
+    amount: typing.Optional[Decimal] = None
     status: typing.Optional[TransactionStatusEnum] = None
     created: typing.Optional[datetime] = None

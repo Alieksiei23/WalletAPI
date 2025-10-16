@@ -1,17 +1,17 @@
 import typing
-from fastapi import APIRouter, status
 
+from api.shema.python_models import (RequestUserModel, RequestUserUpdateModel,
+                                     ResponseUserModel, UserModel,)
 from core.config import SessionDep
+from fastapi import APIRouter, status
 from services.user_service import UserService
-from src.api.shema.python_models import (ResponseUserModel, RequestUserModel,
-                                         UserModel, RequestUserUpdateModel)
 
 
 router = APIRouter()
 
 
 @router.get("/users",
-            response_model=typing.Optional[list[ResponseUserModel]] | None,
+            response_model=typing.Optional[list[ResponseUserModel]],
             status_code=status.HTTP_200_OK,
             )
 async def get_users(session: SessionDep,
@@ -24,12 +24,12 @@ async def get_users(session: SessionDep,
 
 
 @router.post("/users", status_code=status.HTTP_200_OK)
-async def post_user(user: RequestUserModel, session: SessionDep):
+async def post_user(user: RequestUserModel, session: SessionDep) -> UserModel:
     result = await UserService.register_user(user, session)
     return result
 
 
-@router.patch("/users/{user_id}", response_model=typing.Optional[UserModel] | None)
-async def patch_user(user_id: int, user: RequestUserUpdateModel, session: SessionDep):
+@router.patch("/users/{user_id}", response_model=typing.Optional[UserModel])
+async def patch_user(user_id: int, user: RequestUserUpdateModel, session: SessionDep) -> typing.Optional[UserModel]:
     result = await UserService.update_user_status(user_id, user, session)
     return result
