@@ -3,18 +3,17 @@ from typing import Any
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from db.queries import (get_not_rollbacked_deposit_amount,
+from db.queries import (get_deposit_amount_without_rollback,
+                        get_deposit_distinct_users_count,
                         get_not_rollbacked_transactions_count,
-                        get_not_rollbacked_withdraw_amount,
-                        get_registered_and_deposit_users_count,
-                        get_registered_and_not_rollbacked_deposit_users_count,
-                        get_registered_users_count, get_transactions_count,)
+                        get_registered_users_count, get_transactions_count,
+                        get_withdraw_amount_without_rollback,)
 
 
 class AnalitycService:
     @staticmethod
     async def get_analitycs_for_52_weeks(session: AsyncSession) -> list[dict[str, Any]]:
-        dt_gt = datetime.utcnow().date() - timedelta(weeks=1) + timedelta(days=1)
+        dt_gt = datetime.utcnow().date() - timedelta(days=6)
         dt_lt = datetime.utcnow().date()
         results = []
         amount_weeks = 52
@@ -22,20 +21,15 @@ class AnalitycService:
             registered_users_count = await get_registered_users_count(
                 session, dt_gt=dt_gt, dt_lt=dt_lt
             )
-            registered_and_deposit_users_count = (
-                await get_registered_and_deposit_users_count(
+            deposit_distinct_users_count = (
+                await get_deposit_distinct_users_count(
                     session, dt_gt=dt_gt, dt_lt=dt_lt
                 )
             )
-            registered_and_not_rollbacked_deposit_users_count = (
-                await get_registered_and_not_rollbacked_deposit_users_count(
-                    session, dt_gt=dt_gt, dt_lt=dt_lt
-                )
-            )
-            not_rollbacked_deposit_amount = await get_not_rollbacked_deposit_amount(
+            deposit_amount_without_rollback = await get_deposit_amount_without_rollback(
                 session, dt_gt=dt_gt, dt_lt=dt_lt
             )
-            not_rollbacked_withdraw_amount = await get_not_rollbacked_withdraw_amount(
+            withdraw_amount_without_rollback = await get_withdraw_amount_without_rollback(
                 session, dt_gt=dt_gt, dt_lt=dt_lt
             )
             transactions_count = await get_transactions_count(
@@ -47,28 +41,16 @@ class AnalitycService:
                 )
             )
             result = {
-                "start_date": dt_gt,
-                "end_date": dt_lt,
-                "registered_users_count": registered_users_count,
-                "registered_and_deposit_users_count": registered_and_deposit_users_count,
-                "registered_and_not_rollbacked_deposit_users_count": registered_and_not_rollbacked_deposit_users_count,
-                "not_rollbacked_deposit_amount": not_rollbacked_deposit_amount,
-                "not_rollbacked_withdraw_amount": not_rollbacked_withdraw_amount,
-                "transactions_count": transactions_count,
-                "not_rollbacked_transactions_count": not_rollbacked_transactions_count,
+                "start date": dt_gt,
+                "end date": dt_lt,
+                "registered users count": registered_users_count,
+                "deposit distinct users count": deposit_distinct_users_count,
+                "deposit amount without rollback": deposit_amount_without_rollback,
+                "withdraw amount without rollback": withdraw_amount_without_rollback,
+                "transactions count": transactions_count,
+                "not rollbacked transactions count": not_rollbacked_transactions_count,
             }
-            for field in (
-                "registered_users_count",
-                "registered_and_deposit_users_count",
-                "registered_and_not_rollbacked_deposit_users_count",
-                "not_rollbacked_deposit_amount",
-                "not_rollbacked_withdraw_amount",
-                "transactions_count",
-                "not_rollbacked_transactions_count",
-            ):
-                if result[field] > 0:
-                    results.append(result)
-                    break
+            results.append(result)
             dt_gt -= timedelta(weeks=1)
             dt_lt -= timedelta(weeks=1)
         return results
