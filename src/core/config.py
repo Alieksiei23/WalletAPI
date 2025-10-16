@@ -1,4 +1,5 @@
 import typing
+from datetime import date, datetime, timedelta
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from sqlalchemy.ext.asyncio import (AsyncSession, async_sessionmaker,
@@ -13,6 +14,9 @@ class Settings(BaseSettings):
     DB_PORT: int
     DB_PASS: str
     DB_USER: str
+    amount_weeks: int = 52
+    start_day: date = datetime.utcnow().date()
+    week_ago: date = datetime.utcnow().date() - timedelta(days=6)
 
     @property
     def url_db(self) -> str:
