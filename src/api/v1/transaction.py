@@ -4,7 +4,7 @@ from fastapi import APIRouter, status
 from src.api.shema.python_models import (RequestTransactionModel,
                                          TransactionModel,)
 from src.core.config import SessionDep
-from src.services.transacriom_service import TransactionService
+from src.services.transacrion_service import TransactionService
 
 
 router = APIRouter()

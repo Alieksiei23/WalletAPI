@@ -1,9 +1,7 @@
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
-from src.api.v1.analytics import router as analytics_router
-from src.api.v1.transaction import router as transaction_router
-from src.api.v1.user import router as user_router
+from src.api.v1 import analytics_router, transaction_router, user_router
 from src.core.config import engine
 from src.db.db_models import Base
 
