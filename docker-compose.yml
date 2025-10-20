@@ -1,0 +1,61 @@
+services:
+  rabbitmq:
+    image: rabbitmq:3.10.7-management
+    container_name: rabbitmq
+    hostname: rabbitmq
+    restart: always
+    environment:
+      - RABBITMQ_DEFAULT_USER=${RM_USER}
+      - RABBITMQ_DEFAULT_PASS=${RM_PASS}
+    networks:
+      - dbnet
+    ports:
+      - 15672:15672
+      - 5672:5672
+
+  postgres:
+    image: postgres:17-alpine
+    container_name: psgr
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_PASSWORD=${DB_PASS}
+    networks:
+      - dbnet
+    ports:
+      - "5432:5432"
+
+  fastapi:
+    build: .
+    depends_on:
+      - rabbitmq
+      - postgres
+    networks:
+      - dbnet
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    volumes:
+      - .:/app
+
+  dramatiq:
+    build: .
+    command: dramatiq src.tasks.tasks
+    depends_on:
+      - rabbitmq
+      - postgres
+    networks:
+      - dbnet
+    env_file:
+      - .env
+    volumes:
+      - .:/app
+
+networks:
+  dbnet:
+
+volumes:
+  postgres-data:

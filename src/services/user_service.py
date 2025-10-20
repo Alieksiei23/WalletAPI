@@ -4,17 +4,18 @@ from datetime import datetime
 from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from api.shema.python_models import (CurrencyEnum, RequestUserUpdateModel,
-                                     ResponseUserModel, UserModel,
-                                     UserStatusEnum,)
-from core.config import get_async_session
-from core.exceptions.exceptions import (BadRequestDataException,
-                                        UserAlreadyActiveException,
-                                        UserAlreadyBlockedException,
-                                        UserAlreadyExistsException,
-                                        UserNotExistsException,)
-from db.db_models import User, UserBalance
 from fastapi import Depends, status
+from src.api.shema.python_models import (CurrencyEnum, RequestUserModel,
+                                         RequestUserUpdateModel,
+                                         ResponseUserModel, UserModel,
+                                         UserStatusEnum,)
+from src.core.config import get_async_session
+from src.core.exceptions.exceptions import (BadRequestDataException,
+                                            UserAlreadyActiveException,
+                                            UserAlreadyBlockedException,
+                                            UserAlreadyExistsException,
+                                            UserNotExistsException,)
+from src.db.db_models import User, UserBalance
 
 
 class UserService:
@@ -51,7 +52,7 @@ class UserService:
         return sorted(results, key=lambda x: x.created)
 
     @staticmethod
-    async def register_user(user: RequestUserUpdateModel, session: AsyncSession) -> typing.Optional[UserModel]:
+    async def register_user(user: RequestUserModel, session: AsyncSession) -> typing.Optional[UserModel]:
         db_user = await session.execute(select(User).where(User.email == user.email))
         if db_user.scalar():
             raise UserAlreadyExistsException(status_code=status.HTTP_409_CONFLICT,

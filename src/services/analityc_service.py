@@ -3,12 +3,12 @@ from typing import Any
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from core.config import settings
-from db.queries import (get_deposit_amount_without_rollback,
-                        get_deposit_distinct_users_count,
-                        get_not_rollbacked_transactions_count,
-                        get_registered_users_count, get_transactions_count,
-                        get_withdraw_amount_without_rollback,)
+from src.core.config import settings
+from src.db.queries import (get_deposit_amount_without_rollback,
+                            get_deposit_distinct_users_count,
+                            get_not_rollbacked_transactions_count,
+                            get_registered_users_count, get_transactions_count,
+                            get_withdraw_amount_without_rollback,)
 
 
 class AnalitycService:
@@ -22,10 +22,8 @@ class AnalitycService:
             registered_users_count = await get_registered_users_count(
                 session, dt_gt=dt_gt, dt_lt=dt_lt
             )
-            deposit_distinct_users_count = (
-                await get_deposit_distinct_users_count(
-                    session, dt_gt=dt_gt, dt_lt=dt_lt
-                )
+            deposit_distinct_users_count = await get_deposit_distinct_users_count(
+                session, dt_gt=dt_gt, dt_lt=dt_lt
             )
             deposit_amount_without_rollback = await get_deposit_amount_without_rollback(
                 session, dt_gt=dt_gt, dt_lt=dt_lt
@@ -36,10 +34,8 @@ class AnalitycService:
             transactions_count = await get_transactions_count(
                 session, dt_gt=dt_gt, dt_lt=dt_lt
             )
-            not_rollbacked_transactions_count = (
-                await get_not_rollbacked_transactions_count(
-                    session, dt_gt=dt_gt, dt_lt=dt_lt
-                )
+            not_rollbacked_transactions_count = await get_not_rollbacked_transactions_count(
+                session, dt_gt=dt_gt, dt_lt=dt_lt
             )
             result = {
                 "start date": dt_gt,

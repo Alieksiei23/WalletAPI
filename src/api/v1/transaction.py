@@ -1,9 +1,10 @@
 import typing
 
-from api.shema.python_models import RequestTransactionModel, TransactionModel
-from core.config import SessionDep
 from fastapi import APIRouter, status
-from services.transacriom_service import TransactionService
+from src.api.shema.python_models import (RequestTransactionModel,
+                                         TransactionModel,)
+from src.core.config import SessionDep
+from src.services.transacriom_service import TransactionService
 
 
 router = APIRouter()
@@ -28,7 +29,7 @@ async def post_transaction(user_id: int, transaction: RequestTransactionModel, s
 
 
 @router.patch("/{user_id}/transactions/{transaction_id}",
-              response_model=typing.Optional[TransactionModel])
-async def patch_rollback_transaction(user_id: int, transaction_id: int, session: SessionDep) -> typing.Optional[TransactionModel]:
+              response_model=typing.Optional[dict[str, str]])
+async def patch_rollback_transaction(user_id: int, transaction_id: int, session: SessionDep) -> typing.Optional[dict[str, str]]:
     result = await TransactionService.rollback_transaction(user_id, transaction_id, session)
     return result

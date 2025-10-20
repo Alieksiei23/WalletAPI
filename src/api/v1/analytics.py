@@ -1,16 +1,13 @@
-import typing
-
-from core.config import SessionDep
 from fastapi import APIRouter, status
-from services.analityc_service import AnalitycService
+from src.tasks.tasks import get_analitycs_task
 
 
 router = APIRouter()
 
 
 @router.get("/transactions/analysis",
-            response_model=typing.Optional[list] | None,
+            response_model=dict[str, str],
             status_code=status.HTTP_200_OK)
-async def get_transaction_analysis(session: SessionDep) -> list[dict[str, typing.Any]]:
-    result = await AnalitycService.get_analitycs_for_52_weeks(session)
-    return result
+async def get_transaction_analysis() -> dict[str, str]:
+    get_analitycs_task.send()
+    return {"message": "success"}

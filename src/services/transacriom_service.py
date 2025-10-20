@@ -4,15 +4,16 @@ from datetime import datetime
 from sqlalchemy import insert, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from api.shema.python_models import (CurrencyEnum, RequestTransactionModel,
-                                     TransactionModel, TransactionStatusEnum,)
-from core.exceptions.exceptions import (
+from fastapi import status
+from src.api.shema.python_models import (CurrencyEnum, RequestTransactionModel,
+                                         TransactionModel,
+                                         TransactionStatusEnum,)
+from src.core.exceptions.exceptions import (
     BadRequestDataException, CreateTransactionForBlockedUserException,
     NegativeBalanceException, TransactionAlreadyRollbackedException,
     TransactionDoesNotBelongToUserException, TransactionNotExistsException,
     UpdateTransactionForBlockedUserException, UserNotExistsException,)
-from db.db_models import Transaction, User, UserBalance
-from fastapi import status
+from src.db.db_models import Transaction, User, UserBalance
 
 
 class TransactionService:
@@ -92,7 +93,7 @@ class TransactionService:
     async def rollback_transaction(user_id: int,
                                    transaction_id: int,
                                    session: AsyncSession
-                                   ) -> typing.Optional[TransactionModel]:
+                                   ) -> typing.Optional[dict[str, str]]:
         if user_id <= 0 or transaction_id <= 0:
             raise BadRequestDataException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
                                           detail="Unprocessable data in request")
@@ -153,3 +154,4 @@ class TransactionService:
                                   .where(Transaction.id == transaction_id)
                                    )
             await session.commit()
+        return {'message': 'Transaction rolled back'}

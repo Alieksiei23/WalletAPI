@@ -5,7 +5,7 @@ from decimal import Decimal
 from pydantic import BaseModel, EmailStr
 from pydantic.v1 import root_validator
 
-from enums.enum import CurrencyEnum, TransactionStatusEnum, UserStatusEnum
+from src.enums.enum import CurrencyEnum, TransactionStatusEnum, UserStatusEnum
 
 
 class RequestUserModel(BaseModel):
