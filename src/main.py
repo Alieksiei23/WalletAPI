@@ -1,16 +1,9 @@
-import uvicorn
+from contextlib import asynccontextmanager
 
-from api.v1 import analytics_router, transaction_router, user_router
-from core.config import engine
-from db.db_models import Base
 from fastapi import FastAPI
-
-
-app = FastAPI()
-
-app.include_router(user_router)
-app.include_router(analytics_router)
-app.include_router(transaction_router)
+from src.api.v1 import analytics_router, transaction_router, user_router
+from src.core.config import engine
+from src.db.db_models import Base
 
 
 async def create_db_and_tables() -> None:
@@ -18,10 +11,13 @@ async def create_db_and_tables() -> None:
         await conn.run_sync(Base.metadata.create_all)
 
 
-@app.on_event("startup")
-async def on_startup() -> None:
+@asynccontextmanager
+async def lifespan(app: FastAPI) -> None:
     await create_db_and_tables()
+    yield
 
+app = FastAPI(lifespan=lifespan)
 
-if __name__ == "__main__":
-    uvicorn.run("main:app", host="0.0.0.0", port=7999, reload=True)
+app.include_router(user_router)
+app.include_router(analytics_router)
+app.include_router(transaction_router)

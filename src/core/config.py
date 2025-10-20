@@ -14,6 +14,10 @@ class Settings(BaseSettings):
     DB_PORT: int
     DB_PASS: str
     DB_USER: str
+    RM_HOST: str
+    RM_PORT: int
+    RM_USER: str
+    RM_PASS: str
     amount_weeks: int = 52
     start_day: date = datetime.utcnow().date()
     week_ago: date = datetime.utcnow().date() - timedelta(days=6)
@@ -21,6 +25,10 @@ class Settings(BaseSettings):
     @property
     def url_db(self) -> str:
         return f"postgresql+asyncpg://{self.DB_USER}:{self.DB_PASS}@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
+
+    @property
+    def url_rm(self) -> str:
+        return f"amqp://{self.RM_USER}:{self.RM_PASS}@{self.RM_HOST}:{self.RM_PORT}/"
 
     model_config = SettingsConfigDict(env_file=".env")
 

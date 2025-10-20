@@ -4,9 +4,9 @@ from decimal import Decimal
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from api.shema.python_models import CurrencyEnum
-from db.db_models import Transaction, User
-from enums.enum import TransactionStatusEnum
+from src.api.shema.python_models import CurrencyEnum
+from src.db.db_models import Transaction, User
+from src.enums.enum import TransactionStatusEnum
 
 
 EXCHANGE_RATES_TO_USD = {
