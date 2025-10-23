@@ -2,7 +2,7 @@ import asyncio
 
 from src.core.config import async_session_maker
 from src.core.dramatic_settings import dramatiq
-from src.services.analityc_service import AnalitycService
+from src.services.logic.analityc_service import AnalitycService
 
 
 @dramatiq.actor

@@ -1,10 +1,10 @@
 import typing
 
 from fastapi import APIRouter, status
-from src.api.shema.python_models import (RequestTransactionModel,
-                                         TransactionModel,)
+from src.api.schema.python_models import (RequestTransactionModel,
+                                          TransactionModel,)
 from src.core.config import SessionDep
-from src.services.transacrion_service import TransactionService
+from src.services.logic.transacrion_service import TransactionService
 
 
 router = APIRouter()
