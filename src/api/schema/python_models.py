@@ -63,3 +63,6 @@ class TransactionModel(BaseModel):
     amount: typing.Optional[Decimal] = None
     status: typing.Optional[TransactionStatusEnum] = None
     created: typing.Optional[datetime] = None
+
+    class Config:
+        from_attributes = True

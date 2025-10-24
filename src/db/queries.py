@@ -4,7 +4,7 @@ from decimal import Decimal
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.api.shema.python_models import CurrencyEnum
+from src.api.schema.python_models import CurrencyEnum
 from src.db.db_models import Transaction, User
 from src.enums.enum import TransactionStatusEnum
 

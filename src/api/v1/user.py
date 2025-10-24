@@ -1,11 +1,11 @@
 import typing
 
 from fastapi import APIRouter, status
-from src.api.shema.python_models import (RequestUserModel,
-                                         RequestUserUpdateModel,
-                                         ResponseUserModel, UserModel,)
+from src.api.schema.python_models import (RequestUserModel,
+                                          RequestUserUpdateModel,
+                                          ResponseUserModel, UserModel,)
 from src.core.config import SessionDep
-from src.services.user_service import UserService
+from src.services.logic.user_service import UserService
 
 
 router = APIRouter()
