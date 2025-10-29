@@ -2,7 +2,7 @@ import typing
 from datetime import datetime
 from decimal import Decimal
 
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, ConfigDict, EmailStr
 from pydantic.v1 import root_validator
 
 from src.enums.enum import CurrencyEnum, TransactionStatusEnum, UserStatusEnum
@@ -26,7 +26,7 @@ class ResponseUserModel(BaseModel):
     email: typing.Optional[str] = None
     status: typing.Optional[UserStatusEnum] = None
     created: typing.Optional[datetime] = None
-    balances: typing.Optional[typing.List[ResponseUserBalanceModel]] = None
+    balances: typing.List[ResponseUserBalanceModel] = None
 
 
 class UserModel(BaseModel):
@@ -64,5 +64,6 @@ class TransactionModel(BaseModel):
     status: typing.Optional[TransactionStatusEnum] = None
     created: typing.Optional[datetime] = None
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(
+        from_attributes=True
+    )

@@ -6,7 +6,7 @@ from src.services.logic.analityc_service import AnalitycService
 
 
 @dramatiq.actor
-def get_analitycs_task() -> None:
+def get_analytics_task() -> None:
 
     async def run_task() -> None:
         async with async_session_maker() as session:
