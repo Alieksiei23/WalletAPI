@@ -38,13 +38,13 @@ class UserService:
         users_rows = users.scalars()
         results = []
         for user in users_rows:
-            result = ResponseUserModel(id=user.id, email=user.email,
-                                       status=UserStatusEnum(user.status), created=user.created)
             balances_sorted = sorted(
                 [{"currency": balance.currency, "amount": balance.amount} for balance in user.user_balance],
                 key=lambda x: x["amount"],
             )
-            result.balances = balances_sorted
+            result = ResponseUserModel(id=user.id, email=user.email,
+                                       status=UserStatusEnum(user.status), created=user.created,
+                                       balances=balances_sorted)
             results.append(result)
         return results
 

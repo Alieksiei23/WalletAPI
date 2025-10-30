@@ -10,6 +10,7 @@ from fastapi import Depends
 
 class Settings(BaseSettings):
     DB_NAME: str
+    TEST_DB_NAME: str
     DB_HOST: str
     DB_PORT: int
     DB_PASS: str
@@ -19,12 +20,16 @@ class Settings(BaseSettings):
     RM_USER: str
     RM_PASS: str
     amount_weeks: int = 52
-    start_day: date = datetime.utcnow().date()
-    week_ago: date = datetime.utcnow().date() - timedelta(days=6)
+    start_day: date = datetime.now().date()
+    week_ago: date = datetime.now().date() - timedelta(days=6)
 
     @property
     def url_db(self) -> str:
         return f"postgresql+asyncpg://{self.DB_USER}:{self.DB_PASS}@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
+
+    @property
+    def url_test_db(self) -> str:
+        return f"postgresql+asyncpg://{self.DB_USER}:{self.DB_PASS}@{self.DB_HOST}:{self.DB_PORT}/{self.TEST_DB_NAME}"
 
     @property
     def url_rm(self) -> str:

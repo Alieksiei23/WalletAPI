@@ -53,7 +53,7 @@ class TransactionService:
                        "currency": transaction.currency,
                        "amount": transaction.amount,
                        "status": "PROCESSED",
-                       "created": datetime.utcnow(),
+                       "created": datetime.now(),
                        }
                 )
             )
