@@ -1,0 +1,12 @@
+id,email,status,created,amount
+1,test@user.com,ACTIVE,2025-10-15,0
+2,test1@user.com,ACTIVE,2025-10-31,0
+3,test2@user.com,ACTIVE,2025-09-15,0
+4,test3@user.com,ACTIVE,2025-10-23,0
+5,test4@user.com,ACTIVE,2025-09-01,0
+6,test5@user.com,ACTIVE,2025-11-01,0
+7,test6@user.com,ACTIVE,2025-08-31,0
+8,test7@user.com,ACTIVE,2025-09-17,0
+9,test8@user.com,BLOCKED,2025-10-19,0
+10,test9@user.com,BLOCKED,2025-10-30,0
+11,test10@user.com,BLOCKED,2025-9-03,0
