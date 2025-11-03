@@ -19,6 +19,8 @@ class Settings(BaseSettings):
     RM_PORT: int
     RM_USER: str
     RM_PASS: str
+    GF_USER: str
+    GF_PASS: str
     amount_weeks: int = 52
     start_day: date = datetime.now().date()
     week_ago: date = datetime.now().date() - timedelta(days=6)
